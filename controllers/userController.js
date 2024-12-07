@@ -1,5 +1,7 @@
 const User = require('../models/userModel');
 
+const bcrypt = require('bcrypt');
+
 exports.signup = async (req,res,next)=>{
     try {
         const {name,email,password} = req.body;
@@ -8,7 +10,8 @@ exports.signup = async (req,res,next)=>{
         if(existingUser){
             return res.status(409).json({message:"Email Already Exists"});
         };
-        const user = await User.create({name,email,password});
+        const hashedPassword = await bcrypt.hash(password,10);
+        const user = await User.create({name,email,password:hashedPassword});
         return res.status(201).json({message:"Signup Successfull", user});
     }
     catch(error){
@@ -23,7 +26,8 @@ exports.login = async (req,res,next)=>{
         if(!user){
             return res.status(404).json({message:"User Not Found"});
         };
-        if(user.password !== password){
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!isPasswordValid){
             return res.status(401).json({message:"Invalid Password"});
         };
         return res.status(200).json({message:"Login Successfull", user});
