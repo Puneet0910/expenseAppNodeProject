@@ -20,6 +20,10 @@
   <body>
     <div class="container">
       <h1 class="text-center">Expense Tracker App</h1>
+      <div class="text-center mb-4">
+        <button class="btn btn-danger mr-2" onclick="logout()">Logout</button>
+        <button class="btn btn-warning" onclick="buyPremium()">Buy Premium</button>
+      </div>
       <form onsubmit="addExpense(event)" method="POST" class="form-group">
         <label for="amount">Enter Amount:</label>
         <input type="number" name="amount" id="amount" class="form-control" required />

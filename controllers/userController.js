@@ -19,6 +19,7 @@ exports.signup = async (req,res,next)=>{
         return res.status(500).json({message:"Internal Server error"});
     }
 };
+const jwt = require('jsonwebtoken');
 exports.login = async (req,res,next)=>{
     try {
         const {email,password} = req.body;
@@ -30,7 +31,8 @@ exports.login = async (req,res,next)=>{
         if(!isPasswordValid){
             return res.status(401).json({message:"Invalid Password"});
         };
-        return res.status(200).json({message:"Login Successfull", user});
+        const token = jwt.sign({userId:user.id},process.env.JWT_SECRET,{expiresIn:'1h'});
+        return res.status(200).json({message:"Login Successfull", user, token});
     }
     catch(error){
         console.log(error);
