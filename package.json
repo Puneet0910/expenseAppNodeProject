@@ -19,5 +19,6 @@
     "razorpay": "^2.9.5",
     "sequelize": "^6.37.5"
   },
+  "devDependencies": {},
   "description": ""
 }

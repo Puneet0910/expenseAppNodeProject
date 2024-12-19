@@ -34,7 +34,7 @@ exports.verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-    // Assuming you get the userId from the auth middleware
+    // userId from the auth middleware
     const userId = req.user.userId;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -50,7 +50,13 @@ exports.verifyPayment = async (req, res) => {
       signature: razorpay_signature || null,
       status: transactionStatus,
     });
-
+    if (transactionStatus === "SUCCESS") {
+      await User.update(
+        { isPremium: true }, // Values to update
+        { where: { id: userId } } // Condition to find the user
+      );
+    
+    }
     return res.status(200).json({ message: `Transaction ${transactionStatus.toLowerCase()} successfully.` });
   } catch (error) {
     console.error("Error in verifyPayment:", error);

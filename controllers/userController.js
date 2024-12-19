@@ -39,3 +39,19 @@ exports.login = async (req,res,next)=>{
         return res.status(500).json({message:"Internal Server error"});
     }
 };
+
+exports.getUserDetails = async (req, res) => {
+    try {
+      const userId = req.user.userId; // Extracted from auth middleware
+      const user = await User.findOne({ where: { id: userId }, attributes: ['isPremium'] });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json({ isPremium: user.isPremium });
+    } catch (error) {
+      console.error("Error in getUserDetails:", error);
+      res.status(500).json({ message: "Failed to fetch user details" });
+    }
+  };

@@ -81,14 +81,6 @@ function logout() {
   location.href = "login.html";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  displayExpenses();
-  if (!token) {
-    alert("Please Login");
-    location.href = "login.html";
-  }
-});
-
 document.getElementById("pay-btn").addEventListener("click", async () => {
   try {
     const response = await axios.post(
@@ -138,5 +130,72 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
   } catch (error) {
     console.error(error);
     alert("Failed to initiate payment. Please try again.");
+  }
+});
+
+document.getElementById("leaderboard-btn").addEventListener("click", async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/leaderboard", {
+      headers: { Authorization: token },
+    });
+
+    const leaderboardData = response.data.leaderboard;
+
+    const leaderboardContainer = document.createElement("div");
+    leaderboardContainer.classList.add("container", "mt-4");
+    leaderboardContainer.innerHTML = `
+      <h3 class="text-center">Leaderboard</h3>
+      <ul class="list-group">
+        ${leaderboardData
+          .map(
+            (user) =>
+              `<li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${user.name}</span>
+                <span>${user.totalExpense}</span>
+              </li>`
+          )
+          .join("")}
+      </ul>
+    `;
+
+    document.body.appendChild(leaderboardContainer);
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    alert("Failed to load leaderboard. Please try again.");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    if (!token) {
+      alert("Please Login");
+      location.href = "login.html";
+      return;
+    }
+
+    // Fetch user details
+    const response = await axios.get("http://localhost:3000/user/getUserDetails", {
+      headers: { Authorization: token },
+    });
+
+    const isPremium = response.data.isPremium;
+
+    if (isPremium) {
+      // Show Premium User badge/message
+      const premiumBadge = document.createElement("div");
+      premiumBadge.classList.add("alert", "alert-success", "text-center");
+      premiumBadge.textContent = "🌟 You are a Premium User! 🌟";
+      document.body.insertBefore(premiumBadge, document.body.firstChild);
+
+      // Show Leaderboard button and hide Pay button
+      document.getElementById("leaderboard-btn").style.display = "block";
+      document.getElementById("pay-btn").style.display = "none";
+    }
+
+    // Load expenses
+    displayExpenses();
+  } catch (error) {
+    console.error("Error loading user details:", error);
+    alert("Failed to load user details. Please try again.");
   }
 });
