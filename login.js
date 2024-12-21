@@ -19,3 +19,8 @@ async   function login(event) {
         }
     }
 }
+function forgotPassword(event) {
+    event.preventDefault();
+    // Redirect user to the forgot password page
+    window.location.href = "forgot.html";
+  }
