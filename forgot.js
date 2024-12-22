@@ -6,6 +6,7 @@ async function sendResetLink(event) {
     try {
         const response = await axios.post("http://localhost:3000/password/forgot-password", { email });
         alert("Password reset link has been sent to your email!");
+        window.location.href = "/login.html";
     } catch (error) {
         if (error.response) {
             alert(error.response.data.message);

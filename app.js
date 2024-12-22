@@ -10,11 +10,13 @@ const passwordRouter = require("./routes/password");
 const userModel = require('./models/userModel');
 const expenseModel = require('./models/expenseModel');
 const orderModel = require('./models/order');
+const ForgotPassword = require("./models/forgotPassword");
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRoute);
 app.use('/expense', expenseRoute);
 app.use('/payment', paymentRoute);
@@ -25,6 +27,9 @@ expenseModel.belongsTo(userModel);
 
 userModel.hasMany(orderModel);
 orderModel.belongsTo(userModel);
+
+userModel.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(userModel);
 
 sequelize.sync()
 .then(()=>{
