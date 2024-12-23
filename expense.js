@@ -188,8 +188,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.body.insertBefore(premiumBadge, document.body.firstChild);
 
       // Show Leaderboard button and hide Pay button
-      document.getElementById("leaderboard-btn").style.display = "block";
+      document.getElementById("leaderboard-btn").style.display = "inline-block";
       document.getElementById("pay-btn").style.display = "none";
+      document.getElementById("download-pdf-btn").style.display = "inline-block";
+      document.getElementById("download-excel-btn").style.display = "inline-block";
     }
 
     // Load expenses
@@ -197,5 +199,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Error loading user details:", error);
     alert("Failed to load user details. Please try again.");
+  }
+});
+
+document.getElementById("download-pdf-btn").addEventListener("click", async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/report/download-pdf", {
+      headers: { Authorization: token },
+      responseType: "blob", // Ensure the response is treated as a file
+    });
+
+    // Create a Blob URL for the file
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = "ExpensesReport.pdf";
+    link.click();
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+    alert("Failed to download PDF. Please try again.");
+  }
+});
+
+document.getElementById("download-excel-btn").addEventListener("click", async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/report/download-excel", {
+      headers: { Authorization: token },
+      responseType: "blob", // Ensure the response is treated as a file
+    });
+
+    // Create a Blob URL for the file
+    const blob = new Blob([response.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = "ExpensesReport.xlsx";
+    link.click();
+  } catch (error) {
+    console.error("Error downloading Excel:", error);
+    alert("Failed to download Excel. Please try again.");
   }
 });
