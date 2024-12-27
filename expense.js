@@ -190,8 +190,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Show Leaderboard button and hide Pay button
       document.getElementById("leaderboard-btn").style.display = "inline-block";
       document.getElementById("pay-btn").style.display = "none";
-      document.getElementById("download-pdf-btn").style.display = "inline-block";
-      document.getElementById("download-excel-btn").style.display = "inline-block";
+      document.getElementById("download-file").style.display = "inline-block";
     }
 
     // Load expenses
@@ -202,42 +201,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-document.getElementById("download-pdf-btn").addEventListener("click", async () => {
-  try {
-    const response = await axios.get("http://localhost:3000/report/download-pdf", {
+
+function download() {
+  const token = localStorage.getItem("token");
+  axios
+    .get("http://localhost:3000/user/download", {
       headers: { Authorization: token },
-      responseType: "blob", // Ensure the response is treated as a file
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        //the bcakend is essentially sending a download link
+        //  which if we open in browser, the file would download
+        var a = document.createElement("a");
+        a.href = response.data.fileUrl;
+        a.download = "myexpense.csv";
+        a.click();
+      } else {
+        throw new Error(response.data.message);
+      }
+    })
+    .catch((err) => {
+      showError(err);
     });
-
-    // Create a Blob URL for the file
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = "ExpensesReport.pdf";
-    link.click();
-  } catch (error) {
-    console.error("Error downloading PDF:", error);
-    alert("Failed to download PDF. Please try again.");
-  }
-});
-
-document.getElementById("download-excel-btn").addEventListener("click", async () => {
-  try {
-    const response = await axios.get("http://localhost:3000/report/download-excel", {
-      headers: { Authorization: token },
-      responseType: "blob", // Ensure the response is treated as a file
-    });
-
-    // Create a Blob URL for the file
-    const blob = new Blob([response.data], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = "ExpensesReport.xlsx";
-    link.click();
-  } catch (error) {
-    console.error("Error downloading Excel:", error);
-    alert("Failed to download Excel. Please try again.");
-  }
-});
+}
+function showError(err) {
+  document.body.innerHTML += `<div style="color:red;"> ${err}</div>`;
+}

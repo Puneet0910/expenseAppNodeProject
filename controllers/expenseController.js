@@ -2,13 +2,16 @@ const Expense = require('../models/expenseModel');
 const User = require('../models/userModel'); // Import the User model
 const Sequelize = require('../utility/database');
 
+const UserServices = require("../services/userServices");
+const S3Services = require("../services/S3Services");
+
 exports.addExpense = async (req, res, next) => {
     const transaction = await Sequelize.transaction(); // Start a new transaction
     try {
         const { amount, description, category } = req.body;
         const userId = req.user.userId;
 
-        // Ensure that the 'amount' is treated as a number
+        // Ensure that the 'amount' is treated as a number 
         const expenseAmount = parseInt(amount, 10);
 
         // Create a new expense within the transaction
@@ -82,5 +85,29 @@ exports.deleteExpense = async (req, res, next) => {
         if (transaction) await transaction.rollback();
         console.log(error);
         res.status(500).json({ message: 'Internal Server error' });
+    }
+};
+
+const json2csv = require('json2csv').parse; // npm install json2csv
+
+exports.downloadFile = async (req, res, next) => {
+    try {
+        const expenses = await UserServices.getExpenses(req);
+
+        // Convert JSON data to CSV format
+        const csv = json2csv(expenses);
+
+        // Generate a filename
+        const userId = req.user.userId;
+        const filename = `Expense${userId}/${new Date().toISOString()}.csv`;
+
+        // Upload the CSV file to S3
+        const fileUrl = await S3Services.uploadToS3(csv, filename);
+        
+        // Return the URL of the uploaded file
+        res.status(200).json({ fileUrl, success: true });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ fileUrl: "", success: false });
     }
 };
