@@ -44,15 +44,36 @@ exports.addExpense = async (req, res, next) => {
 
 
 // Get Expenses
+// Get Expenses with Pagination
 exports.getExpenses = async (req, res, next) => {
     try {
-        const expenses = await Expense.findAll({ where: { userId: req.user.userId } });
-        res.status(200).json({ expenses });
+        const { page = 1, limit = 5 } = req.query; // Default to page 1 and limit 5 expenses per page
+
+        const offset = (page - 1) * limit; // Calculate the offset for the current page
+        const expenses = await Expense.findAll({
+            where: { userId: req.user.userId },
+            limit: parseInt(limit),  // Limit the number of expenses
+            offset: offset,          // Skip the previous expenses
+        });
+
+        // Count the total number of expenses to calculate the total number of pages
+        const totalExpenses = await Expense.count({ where: { userId: req.user.userId } });
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalExpenses / limit);
+
+        res.status(200).json({
+            expenses,
+            totalPages,
+            currentPage: parseInt(page),
+            totalExpenses,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Internal Server error' });
     }
 };
+
 
 // Delete Expense
 exports.deleteExpense = async (req, res, next) => {

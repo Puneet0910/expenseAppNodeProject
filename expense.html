@@ -26,7 +26,7 @@
         <button class="btn btn-info" id="leaderboard-btn" style="display: none;">Show Leaderboard</button>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </div>
-      <form onsubmit="addExpense(event)" method="POST" class="form-group">
+      <form onsubmit="addExpense(event)" method="POST" class="form-group" id="expense-form">
         <label for="amount">Enter Amount:</label>
         <input type="number" name="amount" id="amount" class="form-control" required />
         <label for="description">Enter Description:</label>
@@ -49,7 +49,8 @@
         <button type="submit" class="btn btn-primary">Add Expense</button>
       </form>
     </div>
-    
+    <div id="pagination-container" class="text-center mt-3"></div>
+
     <ul id="expense-list" class="list-group text-center"></ul>
     <div class="text-center mt-4">
       <button class="btn btn-secondary" id="download-file" style="display: none;" onclick="download()">Download File</button>

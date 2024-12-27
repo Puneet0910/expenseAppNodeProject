@@ -18,26 +18,29 @@ async function addExpense(event) {
     );
     alert(response.data.message);
     displayExpenses();
+    document.getElementById("expense-form").reset(); 
   } catch (error) {
     console.log(error);
     alert(error.response.data.message);
   }
 }
 
-async function displayExpenses() {
+let currentPage = 1;
+const itemsPerPage = 5;  // You can change this to 10 or any number of items per page
+
+async function displayExpenses(page = 1) {
   try {
-    const response = await axios.get(
-      "http://localhost:3000/expense/getExpenses",
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
+    const response = await axios.get("http://localhost:3000/expense/getExpenses", {
+      headers: { Authorization: token },
+      params: { page, limit: itemsPerPage }, // Send page and limit as query params
+    });
+
+    const { expenses, totalPages, currentPage, totalExpenses } = response.data;
+
     const expenseList = document.getElementById("expense-list");
     expenseList.innerHTML = "";
 
-    response.data.expenses.forEach((expense) => {
+    expenses.forEach((expense) => {
       const listItem = document.createElement("li");
       listItem.classList.add(
         "list-group-item",
@@ -61,7 +64,7 @@ async function displayExpenses() {
           await axios.delete(
             `http://localhost:3000/expense/deleteExpense/${expense.id}`
           );
-          listItem.remove();
+          displayExpenses(currentPage);  // Reload the expenses after deleting
         } catch (error) {
           console.log(error);
         }
@@ -71,10 +74,32 @@ async function displayExpenses() {
 
       expenseList.appendChild(listItem);
     });
+
+    // Pagination Controls
+    const paginationContainer = document.getElementById("pagination-container");
+    paginationContainer.innerHTML = "";  // Clear previous pagination
+
+    if (currentPage > 1) {
+      const prevButton = document.createElement("button");
+      prevButton.classList.add("btn", "btn-primary", "btn-sm");
+      prevButton.textContent = "Previous";
+      prevButton.addEventListener("click", () => displayExpenses(currentPage - 1));
+      paginationContainer.appendChild(prevButton);
+    }
+
+    if (currentPage < totalPages) {
+      const nextButton = document.createElement("button");
+      nextButton.classList.add("btn", "btn-primary", "btn-sm");
+      nextButton.textContent = "Next";
+      nextButton.addEventListener("click", () => displayExpenses(currentPage + 1));
+      paginationContainer.appendChild(nextButton);
+    }
+    
   } catch (error) {
     console.log(error);
   }
 }
+
 
 function logout() {
   localStorage.removeItem("token");
