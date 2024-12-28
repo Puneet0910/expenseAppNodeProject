@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -11,9 +13,14 @@ const userModel = require('./models/userModel');
 const expenseModel = require('./models/expenseModel');
 const orderModel = require('./models/order');
 const ForgotPassword = require("./models/forgotPassword");
+const helmet = require('helmet');
+const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
+app.use(helmet());
+const accessLog = fs.WriteStream(path.join(__dirname, 'access.log'), {flags:'a'});
+app.use(morgan('combined',{stream:accessLog}));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
