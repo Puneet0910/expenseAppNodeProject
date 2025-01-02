@@ -11,7 +11,7 @@ async function signup(event) {
       userData
     );
     alert(response.data.message); // Success message from controller
-    location.href = "login.html";
+    location.href = "index.html";
   } catch (error) {
     if (error.response) {
       // Handle specific status codes

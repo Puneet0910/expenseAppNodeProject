@@ -131,7 +131,7 @@ exports.updatePassword = async (req, res, next) => {
           <head>
             <script>
               alert("Password updated successfully.");
-              window.location.href = "/login.html";  // Redirect to login page
+              window.location.href = "/index.html";  // Redirect to login page
             </script>
           </head>
           <body>

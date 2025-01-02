@@ -103,7 +103,7 @@ async function displayExpenses(page = 1) {
 
 function logout() {
   localStorage.removeItem("token");
-  location.href = "login.html";
+  location.href = "index.html";
 }
 
 document.getElementById("pay-btn").addEventListener("click", async () => {
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     if (!token) {
       alert("Please Login");
-      location.href = "login.html";
+      location.href = "index.html";
       return;
     }
 
