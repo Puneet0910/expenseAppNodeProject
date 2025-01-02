@@ -29,6 +29,11 @@ app.use('/expense', expenseRoute);
 app.use('/payment', paymentRoute);
 app.use("/leaderboard", premiumRoute);
 app.use("/password", passwordRouter);
+
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname, `public/${req.url}`));
+});
+
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
 
