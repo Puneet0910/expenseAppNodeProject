@@ -8,7 +8,7 @@ async function addExpense(event) {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/expense/addExpense",
+      "http://65.1.237.104/expense/addExpense",
       expenseDetails,
       {
         headers: {
@@ -30,7 +30,7 @@ const itemsPerPage = 5;  // You can change this to 10 or any number of items per
 
 async function displayExpenses(page = 1) {
   try {
-    const response = await axios.get("http://localhost:3000/expense/getExpenses", {
+    const response = await axios.get("http://65.1.237.104/expense/getExpenses", {
       headers: { Authorization: token },
       params: { page, limit: itemsPerPage }, // Send page and limit as query params
     });
@@ -62,7 +62,7 @@ async function displayExpenses(page = 1) {
       deleteButton.addEventListener("click", async () => {
         try {
           await axios.delete(
-            `http://localhost:3000/expense/deleteExpense/${expense.id}`
+            `http://65.1.237.104/expense/deleteExpense/${expense.id}`
           );
           displayExpenses(currentPage);  // Reload the expenses after deleting
         } catch (error) {
@@ -109,7 +109,7 @@ function logout() {
 document.getElementById("pay-btn").addEventListener("click", async () => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/payment/create-order",
+      "http://65.1.237.104/payment/create-order",
       {}, // No payload required here
       {
         headers: { Authorization: token },
@@ -128,7 +128,7 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
       handler: async function (paymentResponse) {
         try {
           await axios.post(
-            "http://localhost:3000/payment/verify-payment",
+            "http://65.1.237.104/payment/verify-payment",
             {
               razorpay_order_id: paymentResponse.razorpay_order_id,
               razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -160,7 +160,7 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
 
 document.getElementById("leaderboard-btn").addEventListener("click", async () => {
   try {
-    const response = await axios.get("http://localhost:3000/leaderboard", {
+    const response = await axios.get("http://65.1.237.104/leaderboard", {
       headers: { Authorization: token },
     });
 
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Fetch user details
-    const response = await axios.get("http://localhost:3000/user/getUserDetails", {
+    const response = await axios.get("http://65.1.237.104/user/getUserDetails", {
       headers: { Authorization: token },
     });
 
@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function download() {
   const token = localStorage.getItem("token");
   axios
-    .get("http://localhost:3000/user/download", {
+    .get("http://65.1.237.104/user/download", {
       headers: { Authorization: token },
     })
     .then((response) => {

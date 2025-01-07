@@ -13,12 +13,12 @@ const userModel = require('./models/userModel');
 const expenseModel = require('./models/expenseModel');
 const orderModel = require('./models/order');
 const ForgotPassword = require("./models/forgotPassword");
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
-app.use(helmet());
+// app.use(helmet());
 const accessLog = fs.WriteStream(path.join(__dirname, 'access.log'), {flags:'a'});
 app.use(morgan('combined',{stream:accessLog}));
 app.use(cors());
