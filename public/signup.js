@@ -7,7 +7,7 @@ async function signup(event) {
 
   try {
     const response = await axios.post(
-      "http://65.1.237.104/user/signup",
+      "http://13.200.222.79/user/signup",
       userData
     );
     alert(response.data.message); // Success message from controller

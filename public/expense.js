@@ -8,7 +8,7 @@ async function addExpense(event) {
 
   try {
     const response = await axios.post(
-      "http://65.1.237.104/expense/addExpense",
+      "http://13.200.222.79/expense/addExpense",
       expenseDetails,
       {
         headers: {
@@ -18,7 +18,7 @@ async function addExpense(event) {
     );
     alert(response.data.message);
     displayExpenses();
-    document.getElementById("expense-form").reset(); 
+    document.getElementById("expense-form").reset();
   } catch (error) {
     console.log(error);
     alert(error.response.data.message);
@@ -26,14 +26,17 @@ async function addExpense(event) {
 }
 
 let currentPage = 1;
-const itemsPerPage = 5;  // You can change this to 10 or any number of items per page
+const itemsPerPage = 5; // You can change this to 10 or any number of items per page
 
 async function displayExpenses(page = 1) {
   try {
-    const response = await axios.get("http://65.1.237.104/expense/getExpenses", {
-      headers: { Authorization: token },
-      params: { page, limit: itemsPerPage }, // Send page and limit as query params
-    });
+    const response = await axios.get(
+      "http://13.200.222.79/expense/getExpenses",
+      {
+        headers: { Authorization: token },
+        params: { page, limit: itemsPerPage }, // Send page and limit as query params
+      }
+    );
 
     const { expenses, totalPages, currentPage, totalExpenses } = response.data;
 
@@ -62,9 +65,9 @@ async function displayExpenses(page = 1) {
       deleteButton.addEventListener("click", async () => {
         try {
           await axios.delete(
-            `http://65.1.237.104/expense/deleteExpense/${expense.id}`
+            `http://13.200.222.79/expense/deleteExpense/${expense.id}`
           );
-          displayExpenses(currentPage);  // Reload the expenses after deleting
+          displayExpenses(currentPage); // Reload the expenses after deleting
         } catch (error) {
           console.log(error);
         }
@@ -77,13 +80,15 @@ async function displayExpenses(page = 1) {
 
     // Pagination Controls
     const paginationContainer = document.getElementById("pagination-container");
-    paginationContainer.innerHTML = "";  // Clear previous pagination
+    paginationContainer.innerHTML = ""; // Clear previous pagination
 
     if (currentPage > 1) {
       const prevButton = document.createElement("button");
       prevButton.classList.add("btn", "btn-primary", "btn-sm");
       prevButton.textContent = "Previous";
-      prevButton.addEventListener("click", () => displayExpenses(currentPage - 1));
+      prevButton.addEventListener("click", () =>
+        displayExpenses(currentPage - 1)
+      );
       paginationContainer.appendChild(prevButton);
     }
 
@@ -91,15 +96,15 @@ async function displayExpenses(page = 1) {
       const nextButton = document.createElement("button");
       nextButton.classList.add("btn", "btn-primary", "btn-sm");
       nextButton.textContent = "Next";
-      nextButton.addEventListener("click", () => displayExpenses(currentPage + 1));
+      nextButton.addEventListener("click", () =>
+        displayExpenses(currentPage + 1)
+      );
       paginationContainer.appendChild(nextButton);
     }
-    
   } catch (error) {
     console.log(error);
   }
 }
-
 
 function logout() {
   localStorage.removeItem("token");
@@ -109,7 +114,7 @@ function logout() {
 document.getElementById("pay-btn").addEventListener("click", async () => {
   try {
     const response = await axios.post(
-      "http://65.1.237.104/payment/create-order",
+      "http://13.200.222.79/payment/create-order",
       {}, // No payload required here
       {
         headers: { Authorization: token },
@@ -128,7 +133,7 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
       handler: async function (paymentResponse) {
         try {
           await axios.post(
-            "http://65.1.237.104/payment/verify-payment",
+            "http://13.200.222.79/payment/verify-payment",
             {
               razorpay_order_id: paymentResponse.razorpay_order_id,
               razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -158,17 +163,19 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
   }
 });
 
-document.getElementById("leaderboard-btn").addEventListener("click", async () => {
-  try {
-    const response = await axios.get("http://65.1.237.104/leaderboard", {
-      headers: { Authorization: token },
-    });
+document
+  .getElementById("leaderboard-btn")
+  .addEventListener("click", async () => {
+    try {
+      const response = await axios.get("http://13.200.222.79/leaderboard", {
+        headers: { Authorization: token },
+      });
 
-    const leaderboardData = response.data.leaderboard;
+      const leaderboardData = response.data.leaderboard;
 
-    const leaderboardContainer = document.createElement("div");
-    leaderboardContainer.classList.add("container", "mt-4");
-    leaderboardContainer.innerHTML = `
+      const leaderboardContainer = document.createElement("div");
+      leaderboardContainer.classList.add("container", "mt-4");
+      leaderboardContainer.innerHTML = `
       <h3 class="text-center">Leaderboard</h3>
       <ul class="list-group">
         ${leaderboardData
@@ -183,12 +190,12 @@ document.getElementById("leaderboard-btn").addEventListener("click", async () =>
       </ul>
     `;
 
-    document.body.appendChild(leaderboardContainer);
-  } catch (error) {
-    console.error("Error fetching leaderboard:", error);
-    alert("Failed to load leaderboard. Please try again.");
-  }
-});
+      document.body.appendChild(leaderboardContainer);
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+      alert("Failed to load leaderboard. Please try again.");
+    }
+  });
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -199,9 +206,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Fetch user details
-    const response = await axios.get("http://65.1.237.104/user/getUserDetails", {
-      headers: { Authorization: token },
-    });
+    const response = await axios.get(
+      "http://13.200.222.79/user/getUserDetails",
+      {
+        headers: { Authorization: token },
+      }
+    );
 
     const isPremium = response.data.isPremium;
 
@@ -226,11 +236,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
 function download() {
   const token = localStorage.getItem("token");
   axios
-    .get("http://65.1.237.104/user/download", {
+    .get("http://13.200.222.79/user/download", {
       headers: { Authorization: token },
     })
     .then((response) => {

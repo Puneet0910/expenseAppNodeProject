@@ -14,7 +14,7 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ where: { email } });
     if (!user) {
       throw new Error("User doesn't exist");
-    } 
+    }
 
     // Generate a unique reset token
     const id = uuid.v4();
@@ -34,7 +34,7 @@ exports.forgotPassword = async (req, res, next) => {
     const emailApi = new Sib.TransactionalEmailsApi();
 
     // Construct the email
-    const resetLink = `http://65.1.237.104/password/reset-Password/${id}`;
+    const resetLink = `http://13.200.222.79/password/reset-Password/${id}`;
     const message = {
       sender: { email: "nainwalpuneet@gmail.com", name: "Expense Tracker" },
       to: [{ email }],
@@ -95,38 +95,44 @@ exports.resetPassword = async (req, res, next) => {
 // Update Password
 // Update Password
 exports.updatePassword = async (req, res, next) => {
-    try {
-      const { newpassword } = req.body; // Extract new password
-      const { id } = req.params; // Extract ID from URL params
-  
-      console.log("ID passed to updatePassword:", id);
-      console.log("New password received:", newpassword); // Log to check if the password is coming in
-  
-      // Check if the newpassword is defined and not empty
-      if (!newpassword || !id) {
-        return res.status(400).json({ message: "New password and ID are required." });
-      }
-  
-      // Find the reset request
-      const resetPasswordRequest = await ForgotPassword.findOne({ where: { id } });
-      if (!resetPasswordRequest) {
-        return res.status(404).json({ message: "Invalid reset request." });
-      }
-  
-      // Find the associated user
-      const user = await User.findOne({ where: { id: resetPasswordRequest.userId } });
-      if (!user) {
-        return res.status(404).json({ message: "User does not exist." });
-      }
-  
-      // Hash the new password
-      const hashedPassword = await bcrypt.hash(newpassword, 10);
-  
-      // Update the user's password
-      await user.update({ password: hashedPassword });
-  
-      // Send a success response with alert and redirect
-      res.status(200).send(`
+  try {
+    const { newpassword } = req.body; // Extract new password
+    const { id } = req.params; // Extract ID from URL params
+
+    console.log("ID passed to updatePassword:", id);
+    console.log("New password received:", newpassword); // Log to check if the password is coming in
+
+    // Check if the newpassword is defined and not empty
+    if (!newpassword || !id) {
+      return res
+        .status(400)
+        .json({ message: "New password and ID are required." });
+    }
+
+    // Find the reset request
+    const resetPasswordRequest = await ForgotPassword.findOne({
+      where: { id },
+    });
+    if (!resetPasswordRequest) {
+      return res.status(404).json({ message: "Invalid reset request." });
+    }
+
+    // Find the associated user
+    const user = await User.findOne({
+      where: { id: resetPasswordRequest.userId },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist." });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+
+    // Update the user's password
+    await user.update({ password: hashedPassword });
+
+    // Send a success response with alert and redirect
+    res.status(200).send(`
         <html>
           <head>
             <script>
@@ -139,9 +145,10 @@ exports.updatePassword = async (req, res, next) => {
           </body>
         </html>
       `);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Something went wrong.", error: err.message });
-    }
-  };
-  
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Something went wrong.", error: err.message });
+  }
+};
