@@ -5,7 +5,7 @@ async function login(event) {
   const user = { email, password };
 
   try {
-    const response = await axios.post("http://13.200.222.79/user/login", user);
+    const response = await axios.post("http://65.1.221.190/user/login", user);
     const token = response.data.token;
     localStorage.setItem("token", token);
     alert("Login successful!");
