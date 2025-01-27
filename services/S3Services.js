@@ -16,9 +16,8 @@ exports.uploadToS3 = async (data, filename) => {
 
     const params = {
         Bucket: BUCKET_NAME,
-        Key: filename, // Fixed typo from "key" to "Key"
+        Key: filename, 
         Body: data,
-        // Removed the ACL property
     };
 
     try {

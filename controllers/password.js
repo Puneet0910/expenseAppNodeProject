@@ -34,7 +34,7 @@ exports.forgotPassword = async (req, res, next) => {
     const emailApi = new Sib.TransactionalEmailsApi();
 
     // Construct the email
-    const resetLink = `http://65.1.221.190/password/reset-Password/${id}`;
+    const resetLink = `http://13.203.180.99/password/reset-Password/${id}`;
     const message = {
       sender: { email: "nainwalpuneet@gmail.com", name: "Expense Tracker" },
       to: [{ email }],
