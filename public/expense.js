@@ -8,7 +8,7 @@ async function addExpense(event) {
 
   try {
     const response = await axios.post(
-      "http://13.203.180.99/expense/addExpense",
+      "http://43.205.15.199/expense/addExpense",
       expenseDetails,
       {
         headers: {
@@ -31,7 +31,7 @@ const itemsPerPage = 5; // You can change this to 10 or any number of items per 
 async function displayExpenses(page = 1) {
   try {
     const response = await axios.get(
-      "http://13.203.180.99/expense/getExpenses",
+      "http://43.205.15.199/expense/getExpenses",
       {
         headers: { Authorization: token },
         params: { page, limit: itemsPerPage }, // Send page and limit as query params
@@ -65,7 +65,7 @@ async function displayExpenses(page = 1) {
       deleteButton.addEventListener("click", async () => {
         try {
           await axios.delete(
-            `http://13.203.180.99/expense/deleteExpense/${expense.id}`
+            `http://43.205.15.199/expense/deleteExpense/${expense.id}`
           );
           displayExpenses(currentPage); // Reload the expenses after deleting
         } catch (error) {
@@ -114,7 +114,7 @@ function logout() {
 document.getElementById("pay-btn").addEventListener("click", async () => {
   try {
     const response = await axios.post(
-      "http://13.203.180.99/payment/create-order",
+      "http://43.205.15.199/payment/create-order",
       {}, // No payload required here
       {
         headers: { Authorization: token },
@@ -133,7 +133,7 @@ document.getElementById("pay-btn").addEventListener("click", async () => {
       handler: async function (paymentResponse) {
         try {
           await axios.post(
-            "http://13.203.180.99/payment/verify-payment",
+            "http://43.205.15.199/payment/verify-payment",
             {
               razorpay_order_id: paymentResponse.razorpay_order_id,
               razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -167,7 +167,7 @@ document
   .getElementById("leaderboard-btn")
   .addEventListener("click", async () => {
     try {
-      const response = await axios.get("http://13.203.180.99/leaderboard", {
+      const response = await axios.get("http://43.205.15.199/leaderboard", {
         headers: { Authorization: token },
       });
 
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch user details
     const response = await axios.get(
-      "http://13.203.180.99/user/getUserDetails",
+      "http://43.205.15.199/user/getUserDetails",
       {
         headers: { Authorization: token },
       }
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function download() {
   const token = localStorage.getItem("token");
   axios
-    .get("http://13.203.180.99/user/download", {
+    .get("http://43.205.15.199/user/download", {
       headers: { Authorization: token },
     })
     .then((response) => {
